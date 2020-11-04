@@ -1,12 +1,12 @@
 #!/bin/bash
 
-function BrowserInstall()
-    clear
+function BrowserInstall(){
+    
     echo "[INFO] note that Firefox is installed by default"
     echo "1. Chrome     4.TOR"
     echo "2. Vivaldi    5. Continue script"
     echo "3. Opera"
-    read -r .p "Chose the browser you wish to install: " r
+    read -r -p "Chose the browser you wish to install: " r
     case $r in
         1) sudo apt install google-chrome-stable & BrowserInstall & BrowserInstall ;;
         2) wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add - && sudo add-apt-repository 'deb https://repo.vivaldi.com/archive/deb/ stable main' && sudo apt update && sudo apt install vivaldi-stable & BrowserInstall ;;
@@ -15,6 +15,7 @@ function BrowserInstall()
         5) return ;;
         *) echo "[ERROR] unexpected argument" & BrowserInstall ;;
     esac
+}
 
 echo -e "[LOG] Starting essential install"
 if [ "EUID" -ne 0 ]; then
@@ -22,19 +23,22 @@ if [ "EUID" -ne 0 ]; then
     exit
 fi
 
-if sudo apt update && sudo apt upgrade && flatpak update; then
+if sudo apt update && sudo apt upgrade && flatpak update
+then
     echo -e "System update sucessfull"
 else
     echo -e "[ERROR] could not update system"
     exit
 fi
 
-if sudo apt install snap;
+if sudo apt install snap; then
     echo -e "Snap as been installed"
 else
     echo -e "Could not install Snap"
     exit
 fi
+
+sudo apt install ubuntu-restricted-extras
 
 sudo apt install gnome-tweaks
 BrowserInstall
@@ -60,3 +64,5 @@ echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sou
 sudo apt update && sudo apt install spotify-client
 
 sudo apt install neovim
+
+
