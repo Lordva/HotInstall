@@ -72,3 +72,4 @@ else
 fi
 
 sudo snap install pycharm-comunity --classic
+sudo apt install neovim
