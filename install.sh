@@ -65,4 +65,10 @@ sudo apt update && sudo apt install spotify-client
 
 sudo apt install neovim
 
+if python3 --version; then
+	echo "Pyhton3 is alredy insalled"
+else
+	sudo apt-get install python3.6
+fi
 
+sudo snap install pycharm-comunity --classic
