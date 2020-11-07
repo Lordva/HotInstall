@@ -16,7 +16,11 @@ function sudo_user_create(){
 	read -r -p "Name of the Sudo User (this user will be the one with witch you connect to the server, root access will be disable for security): " key
 	read -r -p "Password for $key (must be strong): " pass
 	if [[$PASS_CHECK = "$pass: OK"]]; then
-		useradd $key -m -p $pass -g sudo -s /bin/sh
+		useradd $key -m -p $pass -aG wheel -s /bin/sh
+		echo "[+] user $key has been created you must do the folowing :"
+		echo "Put your SSH key in /home/$key/.ssh/authorised_keys"
+		echo "If you don't know what an ssh key is check this: "
+		sleep 5
 	else
 		echo "[-] Your password is too simple"
 		sudo_user_create
@@ -34,5 +38,20 @@ function Ubuntu(){
 	u_ssh
 }
 
+function Firewall()
+{
+	systemctl enable --now firewalld
+	systemctl start firewalld
+	read -r -p "[*] List the services you wish to enable (https ssh ftp etc..): " key
+	read -r -p "[*] List the ports you wish to open: " key2
+	for i in $key; do
+		firewall-cmd --permanent --zone=public --add-service=$i
+	done
+	for i in $key2; do
+		firewall-cmd --permanent --zone=public --add-port=$i
+	done
+	firewall-cmd --reload
+	echo "[+] Firewalld has been setup"
+}
 if [ "$1" = "-ubuntu" ]; then
 	Ubuntu
