@@ -8,10 +8,6 @@ if [ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
-function u_requirements(){
-	sudo apt install cracklib-runtime
-}
-
 function sudo_user_create(){
 	read -r -p "Name of the Sudo User (this user will be the one with witch you connect to the server, root access will be disable for security): " key
 	read -r -p "Password for $key (must be strong): " pass
@@ -26,16 +22,11 @@ function sudo_user_create(){
 		sudo_user_create
 	fi
 }
-function u_ssh(){
+function ssh(){
 	sed -i -e 's/#PermitRootLogin yes/PermitRootLogin no/g'
 	sed -i -e 's/#Port 22/Port 69/g'
 	sed -i -e 's/#Banner none/Banner /etc/issue/g'
 	sed -i -e 's/PasswordAuthentification yes/PasswordAuthentification no/g'
-}
-
-function Ubuntu(){
-	sudo_user_create
-	u_ssh
 }
 
 function Firewall()
@@ -53,5 +44,11 @@ function Firewall()
 	firewall-cmd --reload
 	echo "[+] Firewalld has been setup"
 }
-if [ "$1" = "-ubuntu" ]; then
-	Ubuntu
+if [ "$1" = "-firewall" ]; then
+	Firewall
+elif [ "$1" = "--help" ]; then
+	echo "No help page yet"
+else
+	echo "Error invalid arguments"
+	echo "try --help"
+fi
