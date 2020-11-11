@@ -23,6 +23,12 @@ function sudo_user_create(){
 	fi
 }
 function ssh(){
+	read -r -p 'do you have a user to ssh into the machine ?[Y/n]: ' key
+	case $key in
+		y) continue ;;
+		n) sudo_user_create ;;
+		*) echo "Invalid Input please enter y or n " && ssh ;;
+	esac
 	sed -i -e 's/#PermitRootLogin yes/PermitRootLogin no/g'
 	sed -i -e 's/#Port 22/Port 69/g'
 	sed -i -e 's/#Banner none/Banner /etc/issue/g'
@@ -46,6 +52,8 @@ function Firewall()
 }
 if [ "$1" = "-firewall" ]; then
 	Firewall
+elif [ "$1" = "-sshd" ]; then
+	ssh
 elif [ "$1" = "--help" ]; then
 	echo "No help page yet"
 else
